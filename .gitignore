@@ -1,0 +1,45 @@
+# ✅ Gradle
+.gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ✅ Gradle Wrapper (보존)
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# ✅ IntelliJ 설정 유지
+# 무조건 무시하지 않고 필요한 설정은 유지
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/compiler.xml
+!.idea/misc.xml
+!.idea/modules.xml
+*.iml
+
+# ✅ STS, Eclipse
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# ✅ VS Code
+.vscode/
+
+# ✅ NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ✅ 기타
+out/
+HELP.md
