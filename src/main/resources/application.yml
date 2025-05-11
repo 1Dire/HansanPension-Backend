@@ -4,13 +4,33 @@ spring:
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
-  jpa:
+
+jwt:
+  secret: 4e5758fd289c4b7cbb51c02bced6b734
+
+jpa:
+  hibernate:
+    ddl-auto: update  # 테이블 자동 생성 및 업데이트
+  properties:
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  # ??? ??
-  jackson:
-    time-zone: Asia/Seoul
+      format_sql: true
+  show-sql: true  # SQL 로그를 콘솔에 출력
+
+# Swagger 관련 설정
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+
+logging:
+  level:
+    io.netty: DEBUG
+
+netty:
+  resolver:
+    dns:
+      use-native: false
