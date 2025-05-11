@@ -1,4 +1,4 @@
-package com.hansanpension.backend.entity;
+package com.hansanpension.backend.user.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
-package com.hansanpension.backend.repository;
+package com.hansanpension.backend.user.repository;
 
-import com.hansanpension.backend.entity.User;
+import com.hansanpension.backend.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

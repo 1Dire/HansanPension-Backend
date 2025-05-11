@@ -1,7 +1,7 @@
-package com.hansanpension.backend.controller;
+package com.hansanpension.backend.user.controller;
 
-import com.hansanpension.backend.dto.KakaoLoginRequestDto;
-import com.hansanpension.backend.service.KakaoOAuthService;
+import com.hansanpension.backend.user.dto.KakaoLoginRequestDto;
+import com.hansanpension.backend.user.service.KakaoOAuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

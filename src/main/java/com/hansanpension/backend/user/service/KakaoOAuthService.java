@@ -1,7 +1,7 @@
-package com.hansanpension.backend.service;
+package com.hansanpension.backend.user.service;
 
-import com.hansanpension.backend.entity.User;
-import com.hansanpension.backend.repository.UserRepository;
+import com.hansanpension.backend.user.entity.User;
+import com.hansanpension.backend.user.repository.UserRepository;
 import com.hansanpension.backend.security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

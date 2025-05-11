@@ -1,4 +1,4 @@
-package com.hansanpension.backend.dto;
+package com.hansanpension.backend.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;
