@@ -19,7 +19,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()  // 이 부분을 수정해야 함
                 .requestMatchers("/auth/kakao").permitAll()  // 카카오 로그인 API는 모두 접근 허용
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()  // Swagger UI 및 API 문서 접근 허용
-                .requestMatchers("/api/**").permitAll() // API는 모두 허용
+                .requestMatchers("/api/**").permitAll() // /api/**는 인증 없이 접근 허용
                 .anyRequest().authenticated();  // 그 외 모든 요청은 인증 필요
         return http.build();
     }
