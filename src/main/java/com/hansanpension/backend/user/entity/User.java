@@ -17,6 +17,14 @@ public class User {
 
     private LocalDateTime signupDate = LocalDateTime.now();
 
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER; // 기본값은 USER로 설정
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
     public void setKakaoId(String kakaoId) {
         this.kakaoId = kakaoId;
     }
@@ -41,7 +49,15 @@ public class User {
         return signupDate;
     }
 
-    public Long getId() {
-        return id;
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public enum Role {
+        ADMIN, USER;
     }
 }

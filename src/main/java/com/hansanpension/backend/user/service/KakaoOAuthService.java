@@ -32,16 +32,22 @@ public class KakaoOAuthService {
 
         String kakaoId = String.valueOf(response.get("id"));
 
+        // 이미 존재하는 사용자 찾기
         User user = userRepository.findByKakaoId(kakaoId).orElseGet(() -> {
             User newUser = new User();
             newUser.setKakaoId(kakaoId);
             newUser.setSignupDate(LocalDateTime.now());
+            newUser.setRole(User.Role.USER); // 기본적으로 USER 역할 부여
             return newUser;
         });
 
         user.setLastLoginDate(LocalDateTime.now());
         userRepository.save(user);
 
-        return jwtTokenProvider.generateToken(kakaoId);
+        // 사용자의 역할에 따라 role 설정
+        String role = user.getRole().toString();  // USER 또는 ADMIN
+
+        // JWT 토큰 생성 (role 포함)
+        return jwtTokenProvider.generateToken(kakaoId, role);
     }
 }
