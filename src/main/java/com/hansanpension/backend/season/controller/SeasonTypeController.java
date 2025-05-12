@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/seasons")
 @RequiredArgsConstructor
+@RequestMapping("/api/seasons")
 public class SeasonTypeController {
 
     private final SeasonTypeService seasonTypeService;
 
-    @GetMapping
-    public List<SeasonTypeResponse> getAllSeasons() {
+    @GetMapping("/season-types")
+    public List<SeasonTypeResponse> getAllSeasonTypes() {
         return seasonTypeService.getAllSeasonTypes();
     }
 }
