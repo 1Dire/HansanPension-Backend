@@ -20,26 +20,39 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // roomId -> room_id로 매핑
-    @Column(name = "room_id") // 실제 테이블의 컬럼명
+    @Column(name = "room_id")
     private Integer roomId;
 
     private String kakaoId;
 
-    private LocalDate checkIn;
-    private LocalDate checkOut;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     private Integer numPeople;
+
     private Integer totalPrice;
 
     private String status;
 
     private String phoneNumber;
 
+    private String name;  // ✅ 예약자 이름 필드 추가
+
+    private String memo;  // ✅ 메모 필드 추가
+
     private LocalDateTime createdAt;
 
-    // ManyToOne 관계 설정 (room 테이블과의 관계)
+    @Column(name = "is_charcoal_included", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private String isCharcoalIncluded; // "Y" 또는 "N"
+
     @ManyToOne
     @JoinColumn(name = "room_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Room room;
+
+    public String getName() {
+        return this.name;
+    }
 }

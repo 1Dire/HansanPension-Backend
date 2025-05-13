@@ -5,6 +5,8 @@ import com.hansanpension.backend.season.entity.Season;
 import com.hansanpension.backend.season.entity.SeasonType;
 import com.hansanpension.backend.season.repository.SeasonRepository;
 import com.hansanpension.backend.season.repository.SeasonTypeRepository;
+import com.hansanpension.backend.season.dto.SeasonResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +21,9 @@ public class SeasonService {
         SeasonType type = seasonTypeRepository.findById(request.getSeasonTypeId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid SeasonType ID"));
 
-        // 🛠️ SeasonType의 이름/설명을 가져와서 Season에 주입
-        String name = type.getName(); // 예: "봄 시즌"
-        String description = type.getDescription(); // 예: "날씨가 따뜻한 기간"
+
+        String name = type.getName();
+        String description = type.getDescription();
 
         Season season = new Season(
                 name,
@@ -32,5 +34,18 @@ public class SeasonService {
         );
 
         return seasonRepository.save(season);
+    }
+
+    public List<SeasonResponse> getAllSeasons() {
+        return seasonRepository.findAll().stream()
+                .map(SeasonResponse::fromEntity)
+                .toList();
+    }
+
+    public void deleteSeason(Long id) {
+        if (!seasonRepository.existsById(id)) {
+            throw new IllegalArgumentException("존재하지 않는 시즌입니다.");
+        }
+        seasonRepository.deleteById(id);
     }
 }
