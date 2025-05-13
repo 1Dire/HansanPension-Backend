@@ -17,5 +17,6 @@ public class BookCreateDTO {
     private String status;
     private String name;
     private String memo;
-    private String isCharcoalIncluded; // ✅ 추가
+    private String isCharcoalIncluded;
+    private String phoneNumber;
 }

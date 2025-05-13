@@ -39,9 +39,9 @@ public class Book {
 
     private String phoneNumber;
 
-    private String name;  // ✅ 예약자 이름 필드 추가
+    private String name;
 
-    private String memo;  // ✅ 메모 필드 추가
+    private String memo;
 
     private LocalDateTime createdAt;
 

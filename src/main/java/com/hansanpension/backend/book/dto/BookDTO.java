@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class BookDTO {
     private Long id;
-    private Long roomId;  // Long 타입으로 수정
+    private Long roomId;
     private String roomName;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -18,6 +18,8 @@ public class BookDTO {
     private Integer totalPrice;
     private String status;
     private LocalDateTime createdAt;
+    private String phoneNumber;
     private String name;
     private String memo;
+    private String isCharcoalIncluded;
 }

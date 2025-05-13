@@ -34,11 +34,7 @@ public class BookController {
 
     // 월별 예약 목록 조회
     @GetMapping
-    public List<BookDTO> getBookingsByMonth(
-            @RequestParam int year,
-            @RequestParam int month,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
-    ) {
+    public List<BookDTO> getBookingsByMonth(@RequestParam int year, @RequestParam int month, @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         boolean isAdmin = false;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -57,31 +53,23 @@ public class BookController {
 
     // 관리자 여부 확인
     private boolean checkIfAdmin(String kakaoId) {
-        return userRepository.findByKakaoId(kakaoId)
-                .map(user -> {
-                    boolean isAdmin = user.getRole() == User.Role.ADMIN;
-                    logger.debug("Found user with kakaoId: {}. Role is: {}", kakaoId, user.getRole());
-                    return isAdmin;
-                })
-                .orElse(false);
+        return userRepository.findByKakaoId(kakaoId).map(user -> {
+            boolean isAdmin = user.getRole() == User.Role.ADMIN;
+            logger.debug("Found user with kakaoId: {}. Role is: {}", kakaoId, user.getRole());
+            return isAdmin;
+        }).orElse(false);
     }
 
     // 특정 방의 예약 가능 일수 확인
     @GetMapping("/check-availability")
-    public ResponseEntity<Map<String, Object>> checkAvailability(
-            @RequestParam int roomId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate
-    ) {
+    public ResponseEntity<Map<String, Object>> checkAvailability(@RequestParam int roomId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
         Map<String, Object> result = bookService.checkMaxAvailableDays(roomId, startDate);
         return ResponseEntity.ok(result);
     }
 
     // 예약 등록 (POST 요청)
     @PostMapping
-    public ResponseEntity<BookDTO> createBooking(
-            @RequestBody BookCreateDTO bookCreateDTO,
-            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
-    ) {
+    public ResponseEntity<BookDTO> createBooking(@RequestBody BookCreateDTO bookCreateDTO, @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         String kakaoId = null;
 
         // 비회원 예약 처리
@@ -95,5 +83,36 @@ public class BookController {
         // BookCreateDTO -> BookDTO 변환 후 저장
         BookDTO savedBooking = bookService.createBooking(bookCreateDTO, kakaoId);
         return ResponseEntity.ok(savedBooking);
+    }
+
+
+    // 예약 ID로 예약 데이터 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<BookDTO> getBookingById(@PathVariable Long id) {
+        BookDTO booking = bookService.getBookingById(id);
+        return booking != null ? ResponseEntity.ok(booking) : ResponseEntity.notFound().build();
+    }
+
+    // 예약 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+        boolean deleted = bookService.deleteBooking(id);
+        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    // 예약 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<BookDTO> updateBooking(@PathVariable Long id, @RequestBody BookCreateDTO bookCreateDTO, @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        String kakaoId = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.replace("Bearer ", "");
+            if (jwtTokenProvider.validateToken(token)) {
+                kakaoId = jwtTokenProvider.getSubject(token);
+            }
+        }
+
+        BookDTO updatedBooking = bookService.updateBooking(id, bookCreateDTO, kakaoId);
+        return updatedBooking != null ? ResponseEntity.ok(updatedBooking) : ResponseEntity.notFound().build();
     }
 }
