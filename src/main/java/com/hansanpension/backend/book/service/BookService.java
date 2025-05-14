@@ -139,5 +139,27 @@ public class BookService {
                 .phoneNumber(savedBooking.getPhoneNumber()).name(savedBooking.getName()).memo(savedBooking.getMemo()).createdAt(savedBooking.getCreatedAt()).isCharcoalIncluded(savedBooking.getIsCharcoalIncluded()).build();
     }
 
+    // 오늘 이후 예약(오늘 포함) - kakaoId로 조회
+    public List<BookDTO> getBookingsByKakaoIdFromToday(String kakaoId) {
+        LocalDate today = LocalDate.now();
+        List<Book> bookings = bookRepository.findByKakaoIdAndEndDateAfterOrEndDateEquals(kakaoId, today, today);
 
+        return bookings.stream().map(book ->
+                BookDTO.builder()
+                        .id(book.getId())
+                        .roomId(book.getRoomId().longValue())
+                        .roomName(book.getRoom().getName())
+                        .startDate(book.getStartDate())
+                        .endDate(book.getEndDate())
+                        .numPeople(book.getNumPeople())
+                        .totalPrice(book.getTotalPrice())
+                        .status(book.getStatus())
+                        .createdAt(book.getCreatedAt())
+                        .phoneNumber(book.getPhoneNumber())
+                        .name(book.getName())
+                        .memo(book.getMemo())
+                        .isCharcoalIncluded(book.getIsCharcoalIncluded())
+                        .build()
+        ).collect(Collectors.toList());
+    }
 }

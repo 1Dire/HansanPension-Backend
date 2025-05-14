@@ -95,11 +95,28 @@ public class BookController {
 
     // 예약 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBooking(@PathVariable Long id, @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        String kakaoId = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.replace("Bearer ", "");
+            if (jwtTokenProvider.validateToken(token)) {
+                kakaoId = jwtTokenProvider.getSubject(token);
+                // 🔐 관리자 권한 확인
+                if (!checkIfAdmin(kakaoId)) {
+                    logger.warn("비관리자가 예약 삭제를 시도했습니다. kakaoId: {}", kakaoId);
+                    return ResponseEntity.status(403).build(); // Forbidden
+                }
+            } else {
+                return ResponseEntity.status(401).build(); // Unauthorized
+            }
+        } else {
+            return ResponseEntity.status(401).build(); // Unauthorized
+        }
+
         boolean deleted = bookService.deleteBooking(id);
         return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
-
     // 예약 수정
     @PutMapping("/{id}")
     public ResponseEntity<BookDTO> updateBooking(@PathVariable Long id, @RequestBody BookCreateDTO bookCreateDTO, @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
@@ -109,10 +126,34 @@ public class BookController {
             String token = authorizationHeader.replace("Bearer ", "");
             if (jwtTokenProvider.validateToken(token)) {
                 kakaoId = jwtTokenProvider.getSubject(token);
+                // 🔐 관리자 체크
+                if (!checkIfAdmin(kakaoId)) {
+                    logger.warn("비관리자가 예약 수정을 시도했습니다. kakaoId: {}", kakaoId);
+                    return ResponseEntity.status(403).build(); // Forbidden
+                }
+            } else {
+                return ResponseEntity.status(401).build(); // Unauthorized
             }
+        } else {
+            return ResponseEntity.status(401).build(); // Unauthorized
         }
 
         BookDTO updatedBooking = bookService.updateBooking(id, bookCreateDTO, kakaoId);
         return updatedBooking != null ? ResponseEntity.ok(updatedBooking) : ResponseEntity.notFound().build();
     }
+    @GetMapping("/my-bookings")
+    public ResponseEntity<List<BookDTO>> getMyBookings(
+            @RequestHeader(value = "Authorization") String authorizationHeader
+    ) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.replace("Bearer ", "");
+            if (jwtTokenProvider.validateToken(token)) {
+                String kakaoId = jwtTokenProvider.getSubject(token);
+                List<BookDTO> bookings = bookService.getBookingsByKakaoIdFromToday(kakaoId);
+                return ResponseEntity.ok(bookings);
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
 }

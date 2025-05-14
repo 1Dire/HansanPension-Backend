@@ -15,4 +15,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     // 특정 방의 예약을 시작일 기준으로 정렬해서 가져오는 메소드
     List<Book> findByRoomIdOrderByStartDateAsc(int roomId);
+
+    // kakaoId로 오늘 이후 예약(오늘 포함) 조회
+    List<Book> findByKakaoIdAndEndDateAfterOrEndDateEquals(String kakaoId, LocalDate afterDate, LocalDate today);
+
 }
