@@ -1,9 +1,14 @@
-FROM openjdk:17-jdk-slim
-VOLUME /tmp
-# JAR 파일 이름을 고정
-COPY build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+# 1단계: 빌드용 이미지
+FROM gradle:8.5-jdk17 AS builder
+WORKDIR /home/gradle/project
 
+# 캐시 최적화를 위한 단계적 COPY
+COPY build.gradle settings.gradle ./
+COPY src ./src
+RUN gradle build -x test --no-daemon
 
-# 컨테이너가 사용할 포트 설정
-EXPOSE 8080
+# 2단계: 실행용 이미지
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=builder /home/gradle/project/build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
